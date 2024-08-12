@@ -1,3 +1,8 @@
 {
-  "extends": "next/core-web-vitals"
+  "extends": "next/core-web-vitals",
+  "rules": {
+    "no-unused-vars": "warn", // Disable ESLint rule: disallow unused variables
+    "no-empty-pattern": "warn", // Disable ESLint rule: disallow empty destructuring patterns
+    "no-restricted-imports": "off"
+  }
 }
