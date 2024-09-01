@@ -1,23 +1,20 @@
-import { Container } from '@/components/ui/container';
-import { ArrowUpRightIcon, MenuIcon } from 'lucide-react';
 import Link from 'next/link';
+import { MenuIcon } from 'lucide-react';
+
+import { Button, buttonVariants } from '@/components/ui/button';
+import { Container } from '@/components/ui/container';
+import { GithubIcon } from '@/components/icons/github';
+
+import { cn } from '@/utils';
 
 export function Header() {
   return (
-    <div className="h-20 flex items-center fixed top-0 w-full">
-      <Container className="flex items-center justify-between">
+    <div className="fixed top-0 w-full h-20 flex items-center bg-background/50 backdrop-blur-sm">
+      <div className="flex items-center justify-between px-6 md:px-20 w-full max-w-2xl mx-auto">
         <div>
-          <div className="flex items-end">
-            <h1 className="text-2xl font-semibold">Algorithms</h1>
-            <Link
-              className="text-xs flex items-center text-blue-400 ml-2 mb-1 whitespace-nowrap"
-              href="https://github.com/MdTehseenKhan/algorithms"
-              rel="noopener noreferrer"
-              target="_blank"
-            >
-              Source Code <ArrowUpRightIcon className="ml-px size-3" />
-            </Link>
-          </div>
+          <Link href="/" className="text-2xl font-semibold">
+            Algorithms
+          </Link>
 
           <div className="flex text-muted-foreground text-xs">
             <span>Built by</span>
@@ -32,10 +29,21 @@ export function Header() {
           </div>
         </div>
 
-        <div className="p-2">
-          <MenuIcon />
+        <div className="flex items-center gap-1">
+          <Link
+            className={cn(buttonVariants({ variant: 'ghost', size: 'icon' }))}
+            href="https://github.com/MdTehseenKhan"
+            rel="noopener noreferrer"
+            target="_blank"
+          >
+            <GithubIcon />
+          </Link>
+
+          <Button variant="ghost" size="icon">
+            <MenuIcon />
+          </Button>
         </div>
-      </Container>
+      </div>
     </div>
   );
 }

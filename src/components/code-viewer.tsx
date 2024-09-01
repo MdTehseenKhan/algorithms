@@ -1,46 +1,66 @@
 'use client';
 
+import { FC } from 'react';
+import { BundledLanguage } from 'shiki';
+
+import { Button } from '@/components/ui/button';
+import {
+  Drawer,
+  DrawerContent,
+  DrawerHeader,
+  DrawerTitle,
+  DrawerTrigger,
+} from '@/components/ui/drawer';
 import {
   Sheet,
   SheetContent,
   SheetHeader,
   SheetTitle,
+  SheetTrigger,
 } from '@/components/ui/sheet';
-import { FC } from 'react';
 
-import { CopyBlock, dracula } from 'react-code-blocks';
+import { AlgorithmCode } from '@/utils/algorithms';
+import { useMediaQuery } from '@/core/hooks/use-media-query';
+import { CodeBlock } from './ui/codeblock';
 
 interface CodeViewerProps {
-  open: boolean;
-  onOpenChange: (open: boolean) => void;
+  title: string;
+  codes: AlgorithmCode[];
 }
 
-const CodeViewer: FC<CodeViewerProps> = ({ open, onOpenChange }) => {
+export const CodeViewer: FC<CodeViewerProps> = ({ title, codes }) => {
+  const isDesktop = useMediaQuery('(min-width: 768px)');
+
+  const Panel = isDesktop ? Sheet : Drawer;
+  const PanelTrigger = isDesktop ? SheetTrigger : DrawerTrigger;
+  const PanelContent = isDesktop ? SheetContent : DrawerContent;
+  const PanelHeader = isDesktop ? SheetHeader : DrawerHeader;
+  const PanelTitle = isDesktop ? SheetTitle : DrawerTitle;
+
   return (
-    <Sheet open={open} onOpenChange={onOpenChange}>
-      <SheetContent className="md:min-w-[800px] overflow-y-scroll">
-        <SheetHeader className="mb-6">
-          <SheetTitle>
-            {/* {algorithmsData[selectedAlgorithm].title} */}
-          </SheetTitle>
-        </SheetHeader>
+    <Panel>
+      <PanelTrigger asChild>
+        <Button size="sm" variant="secondary">
+          View Code
+        </Button>
+      </PanelTrigger>
+      <PanelContent className="md:min-w-[800px] pb-20">
+        <PanelHeader className="mb-6">
+          <PanelTitle>{title}</PanelTitle>
+        </PanelHeader>
         <div className="flex-col space-y-4">
-          {/* {algorithmsData[selectedAlgorithm].codes.map(
-          ({ language, code }) => (
+          {codes.map(({ language, code }) => (
             <div key={language} className="flex-col space-y-2">
               <h3 className="font-semibold">{language}</h3>
-              <CopyBlock
-                text={code}
-                language={language.toLowerCase()}
-                showLineNumbers={false}
-                theme={dracula}
+              <CodeBlock
+                code={code}
+                filename="ceasar-cipher.ts"
+                lang={language.toLowerCase() as BundledLanguage}
               />
             </div>
-          )
-        )} */}
+          ))}
         </div>
-      </SheetContent>
-    </Sheet>
+      </PanelContent>
+    </Panel>
   );
 };
-export default CodeViewer;

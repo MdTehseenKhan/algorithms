@@ -1,17 +1,18 @@
-export function caesarCipher(message: string, shift: number) {
+function caesarCipher(message: string, shift: number) {
   const shiftAmount = ((shift % 26) + 26) % 26;
-  return message.replace(/[a-zA-Z]/g, (char) => {
+  const result = message.replace(/[a-zA-Z0-9]/g, (char) => {
     const code = char.charCodeAt(0);
     const isUpperCase = code >= 65 && code <= 90;
     const base = isUpperCase ? 65 : 97;
     return String.fromCharCode(((code - base + shiftAmount) % 26) + base);
   });
+  return result;
 }
 
-export function encrypt(message: string, shift: number) {
+export function encryptWithCaesarCipher(message: string, shift: number) {
   return caesarCipher(message, shift);
 }
 
-export function decrypt(message: string, shift: number) {
+export function decryptWithCaesarCipher(message: string, shift: number) {
   return caesarCipher(message, -shift);
 }

@@ -2,6 +2,7 @@ import { CardDescription, CardTitle } from '@/components/ui/card';
 import { Container } from '@/components/ui/container';
 import {
   List,
+  ListHeader,
   ListItem,
   ListItemDescription,
   ListItemTitle,
@@ -12,14 +13,26 @@ const algorithms = [
   {
     id: 1,
     name: 'Caesar Cipher',
-    description: 'Encrypt your message using the Caesar cipher',
-    link: '/ceasar-cipher',
+    description: 'Encrypt/Decrypt your message using the Caesar cipher',
+    link: '/cipher/ceasar-cipher',
+  },
+  {
+    id: 2,
+    name: 'Vigenere Cipher',
+    description: 'Encode/Decode your message using the Vigenere cipher',
+    link: '/cipher/vigenere-cipher',
+  },
+  {
+    id: 3,
+    name: 'Poly-Alpha Cipher',
+    description: 'Encode/Decode your message using the Poly-Alpha cipher',
+    link: '/cipher/poly-alpha-cipher',
   },
 ];
 
 export default function HomePage() {
   return (
-    <Container className="py-10">
+    <Container>
       <div className="mb-5">
         <CardTitle>List of Algorithms</CardTitle>
         <CardDescription>
@@ -29,6 +42,7 @@ export default function HomePage() {
       </div>
 
       <List>
+        <ListHeader>Substitution Ciphers</ListHeader>
         {algorithms.map((algorithm) => (
           <ListItem key={algorithm.id} href={algorithm.link}>
             <ListItemTitle>

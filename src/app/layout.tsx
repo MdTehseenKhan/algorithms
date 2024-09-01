@@ -1,9 +1,12 @@
 import type { Metadata } from 'next';
+
 import { GeistSans } from 'geist/font/sans';
 
 import './globals.css';
+
+import { Toaster } from 'sonner';
+
 import { Header } from './header';
-import { Toaster } from '@/components/ui/toaster';
 
 export const metadata: Metadata = {
   title: 'Algorithms',
@@ -18,9 +21,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className={GeistSans.variable}>
-      <body className="antialiased font-sans">
+      <body className="antialiased font-sans min-h-dvh">
         <Header />
-        <main className="mt-20">{children}</main>
+        <main className="mt-24 max-w-2xl mx-auto">{children}</main>
         <Toaster />
       </body>
     </html>

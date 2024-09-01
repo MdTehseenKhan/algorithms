@@ -9,11 +9,7 @@ export const Container: React.FC<ContainerProps> = ({
   className,
 }) => {
   return (
-    <div
-      className={cn('w-full px-6 lg:container md:px-20 lg:mx-auto', className)}
-    >
-      {children}
-    </div>
+    <div className={cn('w-full px-6 md:px-20', className)}>{children}</div>
   );
 };
 Container.displayName = 'Container';
