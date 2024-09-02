@@ -1,5 +1,6 @@
 import { Container } from '@/components/ui/container';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { AlgorithmInfo } from '@/components/algorithm-info';
 
 import { DecodingForm } from './decoding-form';
 import { EncodingForm } from './encoding-form';
@@ -7,6 +8,7 @@ import { EncodingForm } from './encoding-form';
 export default function VigenereCipherPage() {
   return (
     <main>
+      <AlgorithmInfo algorithmName="vigenere-cipher" />
       <Container>
         <Tabs defaultValue="encoding" className="min-w-80 w-full px-6">
           <TabsList className="flex w-full *:flex-1">

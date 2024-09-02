@@ -1,19 +1,11 @@
-'use client';
-
-import { useSelectedLayoutSegments } from 'next/navigation';
-
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Container } from '@/components/ui/container';
 import { CodeViewer } from '@/components/code-viewer';
 
-import { algorithmList } from '@/utils/algorithms';
+import { algorithms } from '@/utils/algorithms';
 
-export const AlgorithmInfo = () => {
-  const segments = useSelectedLayoutSegments();
-  const category = segments[0];
-  const algo = segments[1];
-
-  const algorithm = algorithmList[category][algo];
+export const AlgorithmInfo = ({ algorithmName }: { algorithmName: string }) => {
+  const algorithm = algorithms[algorithmName];
 
   return (
     <div className="grid gap-4">
@@ -55,7 +47,7 @@ export const AlgorithmInfo = () => {
       <Container>
         <div className="flex justify-between px-6 mb-4">
           <h1 className="text-2xl font-semibold">Implementation</h1>
-          <CodeViewer title={algorithm.title} codes={algorithm.codes} />
+          <CodeViewer filename={algorithmName} codes={algorithm.codes} />
         </div>
       </Container>
     </div>
