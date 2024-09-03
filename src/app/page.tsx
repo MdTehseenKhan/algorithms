@@ -28,6 +28,12 @@ const algorithms = [
     description: 'Encode/Decode your message using the Poly-Alpha cipher',
     link: '/cipher/poly-alpha-cipher',
   },
+  {
+    id: 4,
+    name: 'One-Time Pad Cipher',
+    description: 'Encode/Decode your message using the One-Time Pad cipher',
+    link: '/cipher/otp-cipher',
+  },
 ];
 
 export default function HomePage() {

@@ -27,16 +27,19 @@ export const AlgorithmInfo = ({ algorithmName }: { algorithmName: string }) => {
           </CardHeader>
           <CardContent>
             <div className="flex flex-col gap-2">
-              <p className="flex w-full text-sm text-muted-foreground">
-                <span className="w-28">Worst Case:</span>
+              <p className="flex justify-between items-center gap-4 text-sm text-muted-foreground">
+                <span>Worst Case</span>
+                <span className="flex h-px flex-1 bg-muted-foreground/50"></span>
                 <span>{algorithm.worstCase}</span>
               </p>
-              <p className="flex w-full text-sm text-muted-foreground">
-                <span className="w-28">Average Case:</span>
+              <p className="flex justify-between items-center gap-4 text-sm text-muted-foreground">
+                <span>Average Case</span>
+                <span className="flex h-px flex-1 bg-muted-foreground/50"></span>
                 <span>{algorithm.averageCase}</span>
               </p>
-              <p className="flex w-full text-sm text-muted-foreground">
-                <span className="w-28">Best Case:</span>
+              <p className="flex justify-between items-center gap-4 text-sm text-muted-foreground">
+                <span>Best Case</span>
+                <span className="flex h-px flex-1 bg-muted-foreground/50"></span>
                 <span>{algorithm.bestCase}</span>
               </p>
             </div>

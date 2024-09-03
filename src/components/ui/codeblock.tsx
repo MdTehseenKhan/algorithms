@@ -36,13 +36,13 @@ const CodeBlock: React.FC<CodeBlockProps> = async ({
 
   return (
     // <div className="rounded-lg bg-gradient-to-r from-sky-200 to-sky-400 p-4 !pr-0 md:p-8 lg:p-12 [&>pre]:rounded-none max-w-xl">
-    <div className="overflow-hidden rounded-md">
-      <div className="flex items-center justify-between bg-gradient-to-r from-neutral-900 to-neutral-800 text-sm h-11 px-4">
+    <div className="rounded-md">
+      <div className="flex items-center justify-between rounded-t-md bg-gradient-to-r from-neutral-900 to-neutral-800 text-sm h-11 px-4">
         {filename && <span className="text-secondary">{filename}</span>}
         <CopyToClipboard code={codes[0].code} />
       </div>
       <div
-        className="border-t-2 border-neutral-700 text-sm [&>pre]:overflow-x-auto [&>pre]:!bg-neutral-900 [&>pre]:py-3 [&>pre]:pl-4 [&>pre]:pr-5 [&>pre]:leading-snug [&_code]:block [&_code]:w-fit [&_code]:min-w-full"
+        className="rounded-b-md border-t-2 border-neutral-700 text-sm [&>pre]:overflow-x-auto [&>pre]:!bg-neutral-900 [&>pre]:py-3 [&>pre]:pl-4 [&>pre]:pr-5 [&>pre]:leading-snug [&_code]:block [&_code]:w-fit [&_code]:min-w-full overflow-y-auto"
         dangerouslySetInnerHTML={{ __html: html }}
       ></div>
     </div>

@@ -2,6 +2,7 @@
 
 import React, { useState } from 'react';
 import { CheckIcon, CopyIcon } from 'lucide-react';
+import { toast } from 'sonner';
 
 import { cn } from '@/utils';
 
@@ -17,6 +18,7 @@ export const CopyToClipboard = ({
   const copyToClipboard = async () => {
     try {
       await navigator.clipboard.writeText(code);
+      toast.success('Copied to clipboard');
       setCopied(true);
       setTimeout(() => setCopied(false), 2000);
     } catch (error) {

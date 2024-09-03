@@ -102,7 +102,105 @@ export function decodeWithVigenereCipher(cipherText: string, key: string) {
     codes: [
       {
         language: 'TypeScript',
-        code: ``,
+        code: `function polyAlphaCipher(text: string, keys: string[], encode: boolean) {
+  const alphabet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+  const normalizedKeys = keys.map((key) => key.toUpperCase());
+
+  return text
+    .toUpperCase()
+    .split('')
+    .map((char, i) => {
+      if (!alphabet.includes(char)) return char;
+
+      const charIndex = alphabet.indexOf(char);
+      const currentKey = normalizedKeys[i % normalizedKeys.length];
+      const keyChar = currentKey[i % currentKey.length];
+      const keyIndex = alphabet.indexOf(keyChar);
+
+      const newIndex = encode
+        ? (charIndex + keyIndex) % 26
+        : (charIndex - keyIndex + 26) % 26;
+
+      return alphabet[newIndex];
+    })
+    .join('');
+}
+
+export function encodeWithPolyAlphaCipher(plainText: string, keys: string[]) {
+  return polyAlphaCipher(plainText, keys, true);
+}
+
+export function decodeWithPolyAlphaCipher(text: string, keys: string[]) {
+  return polyAlphaCipher(text, keys, false);
+}
+`,
+      },
+    ],
+  },
+  'otp-cipher': {
+    title: 'One-Time Pad Cipher',
+    description:
+      'Lorem ipsum dolor sit amet consectetur adipisicing elit. Delectus blanditiis sapiente rem sequi optio dignissimos. Nemo, odit quia delectus dignissimos ipsam magnam quis iste consequuntur molestiae voluptas earum molestias alias eius. Impedit architecto vel delectus quis. Repellendus repellat voluptatum ducimus mollitia perspiciatis veniam, quaerat alias sapiente quibusdam delectus et corrupti.',
+    worstCase: 'O(n)',
+    averageCase: 'O(n)',
+    bestCase: 'O(n)',
+    codes: [
+      {
+        language: 'TypeScript',
+        code: `export function encodeWithOtpCipher(text: string, key: string = '') {
+  const generatedKey = key || generateKey(text.length);
+
+  if (generatedKey.length < text.length * 2) {
+    throw new Error('Key must be at least as long as the text (in hex format)');
+  }
+
+  const keyChars = generatedKey
+    .match(/../g)!
+    .map((hex) => String.fromCharCode(parseInt(hex, 16)))
+    .join('');
+  const ciphertext = xorStrings(text, keyChars);
+
+  return {
+    ciphertext: Array.from(ciphertext, (char) =>
+      char.charCodeAt(0).toString(16).padStart(2, '0')
+    ).join(''),
+    key: generatedKey,
+  };
+}
+
+export function decodeWithOtpCipher(ciphertext: string, key: string) {
+  if (key.length < ciphertext.length) {
+    throw new Error('Key must be at least as long as the ciphertext');
+  }
+
+  const cipherChars = ciphertext
+    .match(/../g)!
+    .map((hex) => String.fromCharCode(parseInt(hex, 16)))
+    .join('');
+  const keyChars = key
+    .match(/../g)!
+    .map((hex) => String.fromCharCode(parseInt(hex, 16)))
+    .join('');
+
+  return xorStrings(cipherChars, keyChars);
+}
+
+function generateKey(length: number) {
+  return Array.from({ length }, () =>
+    Math.floor(Math.random() * 256)
+      .toString(16)
+      .padStart(2, '0')
+  ).join('');
+}
+
+function xorStrings(str1: string, str2: string) {
+  return str1
+    .split('')
+    .map((char, i) =>
+      String.fromCharCode(char.charCodeAt(0) ^ str2.charCodeAt(i))
+    )
+    .join('');
+}`,
       },
     ],
   },

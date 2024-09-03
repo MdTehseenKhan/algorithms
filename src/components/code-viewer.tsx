@@ -1,11 +1,12 @@
 import { FC } from 'react';
 
 import { Button } from '@/components/ui/button';
+import { CodeBlock } from '@/components/ui/codeblock';
 import { Drawer, DrawerContent, DrawerTrigger } from '@/components/ui/drawer';
+import { ScrollArea } from '@/components/ui/scroll-area';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
 
 import { AlgorithmCode } from '@/utils/algorithms';
-import { CodeBlock } from './ui/codeblock';
 
 interface CodeViewerProps {
   codes: AlgorithmCode[];
@@ -22,8 +23,12 @@ export const CodeViewer: FC<CodeViewerProps> = ({ codes, filename }) => {
               View Code
             </Button>
           </DrawerTrigger>
-          <DrawerContent className="md:min-w-[800px] pb-20">
-            <CodeBlock filename={filename} codes={codes} />
+          <DrawerContent className="h-2/3 justify-center">
+            {/* <ScrollArea className="h-full w-full"> */}
+            <div className="overflow-y-auto p-4">
+              <CodeBlock filename={filename} codes={codes} />
+            </div>
+            {/* </ScrollArea> */}
           </DrawerContent>
         </Drawer>
       </div>
