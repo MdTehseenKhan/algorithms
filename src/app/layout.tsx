@@ -23,7 +23,7 @@ export default function RootLayout({
     <html lang="en" className={GeistSans.variable}>
       <body className="antialiased font-sans min-h-dvh">
         <Header />
-        <main className="mt-24 max-w-2xl mx-auto">{children}</main>
+        <main className="pt-24 max-w-2xl mx-auto">{children}</main>
         <Toaster />
       </body>
     </html>

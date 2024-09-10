@@ -1,8 +1,8 @@
 'use client';
 
 import { zodResolver } from '@hookform/resolvers/zod';
-import { LockOpenIcon } from 'lucide-react';
-import { useForm } from 'react-hook-form';
+import { LockOpenIcon, PlusIcon, Trash2Icon } from 'lucide-react';
+import { useFieldArray, useForm } from 'react-hook-form';
 
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { Button } from '@/components/ui/button';
@@ -16,21 +16,27 @@ import {
 import { Form } from '@/components/ui/form';
 import { FormInput } from '@/components/ui/form/form-input';
 
-import { decodeWithVigenereCipher } from '@/algorithms/cipher/vigenere-cipher';
+import { decodeWithPolyAlphaCipher } from '@/algorithms/cipher/poly-alpha-cipher';
 import {
-  vigenereCipherFormSchema,
-  VigenereCipherFormValues,
+  polyAlphaCipherFormSchema,
+  PolyAlphaCipherFormValues,
 } from './validation';
 
 export function DecodingForm() {
-  const form = useForm<VigenereCipherFormValues>({
-    resolver: zodResolver(vigenereCipherFormSchema),
+  const form = useForm<PolyAlphaCipherFormValues>({
+    resolver: zodResolver(polyAlphaCipherFormSchema),
     defaultValues: {
       message: '',
       decodedMessage: '',
-      key: '',
+      keys: [{ key: '' }],
     },
   });
+
+  const { fields, append, remove } = useFieldArray({
+    name: 'keys',
+    control: form.control,
+  });
+
   const decodedMessage = form.watch('decodedMessage');
 
   const handleClearDecodedMessage = () => {
@@ -39,8 +45,9 @@ export function DecodingForm() {
     }
   };
 
-  const onSubmit = (data: VigenereCipherFormValues) => {
-    const _decodedMessage = decodeWithVigenereCipher(data.message, data.key);
+  const onSubmit = (data: PolyAlphaCipherFormValues) => {
+    const keys = data.keys.map((key) => key.key);
+    const _decodedMessage = decodeWithPolyAlphaCipher(data.message, keys);
     form.setValue('decodedMessage', _decodedMessage);
   };
 
@@ -64,14 +71,41 @@ export function DecodingForm() {
               onChange={handleClearDecodedMessage}
               required
             />
-            <FormInput
-              form={form}
-              fieldName="key"
-              fieldLabel="Key"
-              placeholder="Enter key here"
-              onChange={handleClearDecodedMessage}
-              required
-            />
+
+            {fields?.map((field, index) => (
+              <div className="flex gap-2 items-end" key={field.id}>
+                <FormInput
+                  form={form}
+                  fieldName={`keys.${index}.key`}
+                  fieldLabel={`Key ${index + 1}`}
+                  placeholder={`Enter key ${index + 1} here`}
+                  onChange={handleClearDecodedMessage}
+                  required
+                />
+                <Button
+                  type="button"
+                  variant="ghost"
+                  disabled={fields?.length === 1}
+                  onClick={() => remove(index)}
+                  className="size-10 text-muted-foreground hover:text-foreground p-0"
+                >
+                  <Trash2Icon className="size-4" />
+                </Button>
+              </div>
+            ))}
+
+            {fields.length < 5 && (
+              <Button
+                type="button"
+                variant="outline"
+                onClick={() => append({ key: '' })}
+                className="w-fit"
+              >
+                <PlusIcon className="size-4 text-foreground mr-2" />
+                <span>Add Key</span>
+              </Button>
+            )}
+
             <Button type="submit" className="w-full">
               Decode
             </Button>

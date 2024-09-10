@@ -1,8 +1,8 @@
 'use client';
 
 import { zodResolver } from '@hookform/resolvers/zod';
-import { LockIcon } from 'lucide-react';
-import { useForm } from 'react-hook-form';
+import { LockIcon, PlusIcon, Trash2Icon } from 'lucide-react';
+import { useFieldArray, useForm } from 'react-hook-form';
 
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { Button } from '@/components/ui/button';
@@ -16,22 +16,27 @@ import {
 import { Form } from '@/components/ui/form';
 import { FormInput } from '@/components/ui/form/form-input';
 
-import { encodeWithVigenereCipher } from '@/algorithms/cipher/vigenere-cipher';
+import { encodeWithPolyAlphaCipher } from '@/algorithms/cipher/poly-alpha-cipher';
 import {
-  vigenereCipherFormSchema,
-  VigenereCipherFormValues,
+  polyAlphaCipherFormSchema,
+  PolyAlphaCipherFormValues,
 } from './validation';
 
 export function EncodingForm() {
-  const form = useForm<VigenereCipherFormValues>({
-    resolver: zodResolver(vigenereCipherFormSchema),
+  const form = useForm<PolyAlphaCipherFormValues>({
+    resolver: zodResolver(polyAlphaCipherFormSchema),
     defaultValues: {
       message: '',
       encodedMessage: '',
-      key: '',
+      keys: [{ key: '' }],
     },
   });
   const encodedMessage = form.watch('encodedMessage');
+
+  const { fields, append, remove } = useFieldArray({
+    name: 'keys',
+    control: form.control,
+  });
 
   const handleClearEncodedMessage = () => {
     if (encodedMessage) {
@@ -39,8 +44,9 @@ export function EncodingForm() {
     }
   };
 
-  const onSubmit = (data: VigenereCipherFormValues) => {
-    const _encodedMessage = encodeWithVigenereCipher(data.message, data.key);
+  const onSubmit = (data: PolyAlphaCipherFormValues) => {
+    const keys = data.keys.map((key) => key.key);
+    const _encodedMessage = encodeWithPolyAlphaCipher(data.message, keys);
     form.setValue('encodedMessage', _encodedMessage);
   };
 
@@ -64,14 +70,41 @@ export function EncodingForm() {
               onChange={handleClearEncodedMessage}
               required
             />
-            <FormInput
-              form={form}
-              fieldName="key"
-              fieldLabel="Key"
-              placeholder="Enter key here"
-              onChange={handleClearEncodedMessage}
-              required
-            />
+
+            {fields?.map((field, index) => (
+              <div className="flex gap-2 items-end" key={field.id}>
+                <FormInput
+                  form={form}
+                  fieldName={`keys.${index}.key`}
+                  fieldLabel={`Key ${index + 1}`}
+                  placeholder={`Enter key ${index + 1} here`}
+                  onChange={handleClearEncodedMessage}
+                  required
+                />
+                <Button
+                  type="button"
+                  variant="ghost"
+                  disabled={fields?.length === 1}
+                  onClick={() => remove(index)}
+                  className="size-10 text-muted-foreground hover:text-foreground p-0"
+                >
+                  <Trash2Icon className="size-4" />
+                </Button>
+              </div>
+            ))}
+
+            {fields.length < 5 && (
+              <Button
+                type="button"
+                variant="outline"
+                onClick={() => append({ key: '' })}
+                className="w-fit"
+              >
+                <PlusIcon className="size-4 text-foreground mr-2" />
+                <span>Add Key</span>
+              </Button>
+            )}
+
             <Button type="submit" className="w-full">
               Encode
             </Button>
