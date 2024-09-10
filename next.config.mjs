@@ -1,8 +1,4 @@
 /** @type {import('next').NextConfig} */
-const nextConfig = {
-  experimental: {
-    optimizePackageImports: ['shiki'],
-  },
-};
+const nextConfig = {};
 
 export default nextConfig;

@@ -3,6 +3,7 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import { LockOpenIcon } from 'lucide-react';
 import { useForm } from 'react-hook-form';
+import { toast } from 'sonner';
 
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { Button } from '@/components/ui/button';
@@ -16,40 +17,44 @@ import {
 import { Form } from '@/components/ui/form';
 import { FormInput } from '@/components/ui/form/form-input';
 
-import { decodeWithVigenereCipher } from '@/algorithms/cipher/vigenere-cipher';
+import { decryptWithPlayfairCipher } from '@/algorithms/cipher/playfair-cipher';
 import {
-  vigenereCipherFormSchema,
-  VigenereCipherFormValues,
+  playfairCipherFormSchema,
+  PlayfairCipherFormValues,
 } from './validation';
 
-export function DecodingForm() {
-  const form = useForm<VigenereCipherFormValues>({
-    resolver: zodResolver(vigenereCipherFormSchema),
+export function DecryptionForm() {
+  const form = useForm<PlayfairCipherFormValues>({
+    resolver: zodResolver(playfairCipherFormSchema),
     defaultValues: {
       message: '',
-      decodedMessage: '',
+      decryptedMessage: '',
       key: '',
     },
   });
-  const decodedMessage = form.watch('decodedMessage');
+  const decryptedMessage = form.watch('decryptedMessage');
 
-  const handleClearDecodedMessage = () => {
-    if (decodedMessage) {
-      form.setValue('decodedMessage', '');
+  const handleClearDecryptedMessage = () => {
+    if (decryptedMessage) {
+      form.setValue('decryptedMessage', '');
     }
   };
 
-  const onSubmit = (data: VigenereCipherFormValues) => {
-    const _decodedMessage = decodeWithVigenereCipher(data.message, data.key);
-    form.setValue('decodedMessage', _decodedMessage);
+  const onSubmit = (data: PlayfairCipherFormValues) => {
+    try {
+      const decryptedGrid = decryptWithPlayfairCipher(data.message, data.key);
+      form.setValue('decryptedMessage', decryptedGrid);
+    } catch (error) {
+      toast.error('Invalid key, please try again!');
+    }
   };
 
   return (
     <Card>
       <CardHeader>
-        <CardTitle className="text-xl">Decoding</CardTitle>
+        <CardTitle className="text-xl">Decryption</CardTitle>
         <CardDescription>
-          Decode your message using the Poly-Alpha Cipher.
+          Decode your message using the Playfair Cipher
         </CardDescription>
       </CardHeader>
 
@@ -61,7 +66,7 @@ export function DecodingForm() {
               fieldName="message"
               fieldLabel="Message"
               placeholder="Enter message here"
-              onChange={handleClearDecodedMessage}
+              onChange={handleClearDecryptedMessage}
               required
             />
             <FormInput
@@ -69,20 +74,20 @@ export function DecodingForm() {
               fieldName="key"
               fieldLabel="Key"
               placeholder="Enter key here"
-              onChange={handleClearDecodedMessage}
+              onChange={handleClearDecryptedMessage}
               required
             />
             <Button type="submit" className="w-full">
-              Decode
+              Decrypt
             </Button>
           </form>
         </Form>
 
-        {decodedMessage && (
+        {decryptedMessage && (
           <Alert className="mt-4" variant="success">
             <LockOpenIcon className="size-4" />
-            <AlertTitle>Decoded Message</AlertTitle>
-            <AlertDescription>{decodedMessage}</AlertDescription>
+            <AlertTitle>Decrypted Grid</AlertTitle>
+            <AlertDescription>{decryptedMessage}</AlertDescription>
           </Alert>
         )}
       </CardContent>

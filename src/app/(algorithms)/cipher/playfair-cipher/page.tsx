@@ -5,10 +5,10 @@ import { AlgorithmInfo } from '@/components/algorithm-info';
 import { DecryptionForm } from './decryption-form';
 import { EncryptionForm } from './encryption-form';
 
-export default function CeasarCipherPage() {
+export default function VigenereCipherPage() {
   return (
     <main>
-      <AlgorithmInfo algorithmName="ceasar-cipher" />
+      <AlgorithmInfo algorithmName="playfair-cipher" />
       <Container className="pb-20">
         <Tabs defaultValue="encryption" className="min-w-80 w-full px-6">
           <TabsList className="flex w-full *:flex-1">

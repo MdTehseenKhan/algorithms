@@ -34,6 +34,12 @@ const algorithms = [
     description: 'Encode/Decode your message using the One-Time Pad cipher',
     link: '/cipher/otp-cipher',
   },
+  {
+    id: 5,
+    name: 'Playfair Cipher',
+    description: 'Encode/Decode your message using the Playfair cipher',
+    link: '/cipher/playfair-cipher',
+  },
 ];
 
 export default function HomePage() {

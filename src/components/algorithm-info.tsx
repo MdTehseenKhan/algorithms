@@ -27,21 +27,18 @@ export const AlgorithmInfo = ({ algorithmName }: { algorithmName: string }) => {
           </CardHeader>
           <CardContent>
             <div className="flex flex-col gap-2">
-              <p className="flex justify-between items-center gap-4 text-sm text-muted-foreground">
-                <span>Worst Case</span>
-                <span className="flex h-px flex-1 bg-muted-foreground/50"></span>
-                <span>{algorithm.worstCase}</span>
-              </p>
-              <p className="flex justify-between items-center gap-4 text-sm text-muted-foreground">
-                <span>Average Case</span>
-                <span className="flex h-px flex-1 bg-muted-foreground/50"></span>
-                <span>{algorithm.averageCase}</span>
-              </p>
-              <p className="flex justify-between items-center gap-4 text-sm text-muted-foreground">
-                <span>Best Case</span>
-                <span className="flex h-px flex-1 bg-muted-foreground/50"></span>
-                <span>{algorithm.bestCase}</span>
-              </p>
+              <TimeComplexity
+                title="Best Case"
+                complexity={algorithm.bestCase}
+              />
+              <TimeComplexity
+                title="Average Case"
+                complexity={algorithm.averageCase}
+              />
+              <TimeComplexity
+                title="Worst Case"
+                complexity={algorithm.worstCase}
+              />
             </div>
           </CardContent>
         </Card>
@@ -56,3 +53,19 @@ export const AlgorithmInfo = ({ algorithmName }: { algorithmName: string }) => {
     </div>
   );
 };
+
+function TimeComplexity({
+  title,
+  complexity,
+}: {
+  title: string;
+  complexity: string;
+}) {
+  return (
+    <p className="flex justify-between items-center gap-4 text-sm text-muted-foreground">
+      <span>{title}</span>
+      <span className="flex h-px flex-1 bg-muted-foreground/50"></span>
+      <span>{complexity}</span>
+    </p>
+  );
+}

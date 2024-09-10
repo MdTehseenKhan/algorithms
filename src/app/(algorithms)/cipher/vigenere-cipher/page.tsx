@@ -9,7 +9,7 @@ export default function VigenereCipherPage() {
   return (
     <main>
       <AlgorithmInfo algorithmName="vigenere-cipher" />
-      <Container>
+      <Container className="pb-20">
         <Tabs defaultValue="encoding" className="min-w-80 w-full px-6">
           <TabsList className="flex w-full *:flex-1">
             <TabsTrigger value="encoding">Encoding</TabsTrigger>

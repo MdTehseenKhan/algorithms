@@ -5,7 +5,7 @@ import * as React from 'react';
 //   transformerNotationDiff,
 //   transformerNotationHighlight,
 // } from '@shikijs/transformers';
-import { createHighlighter } from 'shiki';
+import { codeToHtml } from 'shiki';
 
 import { CopyToClipboard } from '@/components/ui/copy-to-clipboard';
 
@@ -24,11 +24,7 @@ const CodeBlock: React.FC<CodeBlockProps> = async ({
   theme = 'material-theme-darker',
   filename,
 }) => {
-  const highlighter = await createHighlighter({
-    themes: [theme],
-    langs: [lang],
-  });
-  const html = highlighter.codeToHtml(codes[0].code, {
+  const html = await codeToHtml(codes[0].code, {
     lang,
     theme,
     // transformers: [transformerNotationHighlight(), transformerNotationDiff()],
@@ -38,7 +34,7 @@ const CodeBlock: React.FC<CodeBlockProps> = async ({
     // <div className="rounded-lg bg-gradient-to-r from-sky-200 to-sky-400 p-4 !pr-0 md:p-8 lg:p-12 [&>pre]:rounded-none max-w-xl">
     <div className="rounded-md">
       <div className="flex items-center justify-between rounded-t-md bg-gradient-to-r from-neutral-900 to-neutral-800 text-sm h-11 px-4">
-        {filename && <span className="text-secondary">{filename}</span>}
+        {filename && <span className="text-secondary">{filename}.ts</span>}
         <CopyToClipboard code={codes[0].code} />
       </div>
       <div

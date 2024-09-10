@@ -1,8 +1,7 @@
 import Link from 'next/link';
 import { MenuIcon } from 'lucide-react';
 
-import { Button, buttonVariants } from '@/components/ui/button';
-import { Container } from '@/components/ui/container';
+import { buttonVariants } from '@/components/ui/button';
 import { GithubIcon } from '@/components/icons/github';
 
 import { cn } from '@/utils';
@@ -39,9 +38,16 @@ export function Header() {
             <GithubIcon />
           </Link>
 
-          <Button variant="ghost" size="icon">
+          <Link
+            href="/"
+            className={cn(buttonVariants({ variant: 'ghost', size: 'icon' }))}
+          >
             <MenuIcon />
-          </Button>
+          </Link>
+
+          {/* <Button variant="ghost" size="icon">
+            <MenuIcon />
+          </Button> */}
         </div>
       </div>
     </div>
