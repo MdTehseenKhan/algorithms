@@ -1,0 +1,60 @@
+{
+  "$schema": "https://biomejs.dev/schemas/1.9.3/schema.json",
+  "vcs": {
+    "enabled": false,
+    "clientKind": "git",
+    "useIgnoreFile": false
+  },
+  "files": {
+    "ignoreUnknown": false,
+    "ignore": []
+  },
+  "linter": {
+    "ignore": ["node_modules", "dist", "build", "public", ".next", ".turbo"],
+    "enabled": true,
+    "rules": {
+      "recommended": true,
+      "a11y": {
+        "noSvgWithoutTitle": "off",
+        "useKeyWithClickEvents": "off",
+        "useSemanticElements": "off"
+      },
+      "suspicious": {
+        "noExplicitAny": "warn",
+        "noConsoleLog": "warn",
+        "noArrayIndexKey": "warn"
+      },
+      "style": {
+        "useConst": "off",
+        "useTemplate": "off",
+        "noParameterAssign": "warn",
+        "noNonNullAssertion": "off",
+        "useExponentiationOperator": "off",
+        "noUnusedTemplateLiteral": "warn"
+      },
+      "correctness": {
+        "useExhaustiveDependencies": "off"
+      },
+      "complexity": {
+        "noExtraBooleanCast": "off"
+      }
+    }
+  },
+  "formatter": {
+    "ignore": ["node_modules", ".next", "packages/tsconfig", ".turbo"],
+    "enabled": true,
+    "indentWidth": 2,
+    "indentStyle": "space",
+    "lineWidth": 80
+  },
+  "javascript": {
+    "formatter": {
+      "trailingCommas": "es5",
+      "semicolons": "always",
+      "quoteStyle": "single"
+    }
+  },
+  "organizeImports": {
+    "enabled": true
+  }
+}

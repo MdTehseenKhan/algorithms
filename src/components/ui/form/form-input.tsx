@@ -1,7 +1,7 @@
 'use client';
 
-import React from 'react';
-import { UseFormReturn } from 'react-hook-form';
+import type * as React from 'react';
+import type { UseFormReturn } from 'react-hook-form';
 
 import {
   FormControl,
@@ -11,9 +11,10 @@ import {
   FormLabel,
   FormMessage,
 } from '@/components/ui/form';
-import { Input, InputProps } from '@/components/ui/input';
+import { Input, type InputProps } from '@/components/ui/input';
 
 export interface FormInputProps extends Omit<InputProps, 'form'> {
+  // biome-ignore lint/suspicious/noExplicitAny: Dynamic form
   form: UseFormReturn<any>;
   fieldName: string;
   fieldLabel?: string;

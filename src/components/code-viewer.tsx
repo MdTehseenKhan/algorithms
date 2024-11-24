@@ -1,11 +1,11 @@
-import { FC } from 'react';
+import type { AlgorithmCode } from '@/utils/algorithms';
+import type { FC } from 'react';
 
 import { Button } from '@/components/ui/button';
 import { CodeBlock } from '@/components/ui/codeblock';
 import { Drawer, DrawerContent, DrawerTrigger } from '@/components/ui/drawer';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
 
-import { AlgorithmCode } from '@/utils/algorithms';
 
 interface CodeViewerProps {
   codes: AlgorithmCode[];

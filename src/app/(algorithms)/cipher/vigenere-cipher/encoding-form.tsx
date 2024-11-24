@@ -18,8 +18,8 @@ import { FormInput } from '@/components/ui/form/form-input';
 
 import { encodeWithVigenereCipher } from '@/algorithms/cipher/vigenere-cipher';
 import {
+  type VigenereCipherFormValues,
   vigenereCipherFormSchema,
-  VigenereCipherFormValues,
 } from './validation';
 
 export function EncodingForm() {

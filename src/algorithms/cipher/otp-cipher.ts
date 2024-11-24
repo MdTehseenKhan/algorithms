@@ -1,4 +1,4 @@
-export function encodeWithOtpCipher(text: string, key: string = '') {
+export function encodeWithOtpCipher(text: string, key = '') {
   const generatedKey = key || generateKey(text.length);
 
   if (generatedKey.length < text.length * 2) {
@@ -7,7 +7,7 @@ export function encodeWithOtpCipher(text: string, key: string = '') {
 
   const keyChars = generatedKey
     .match(/../g)!
-    .map((hex) => String.fromCharCode(parseInt(hex, 16)))
+    .map((hex) => String.fromCharCode(Number.parseInt(hex, 16)))
     .join('');
   const ciphertext = xorStrings(text, keyChars);
 
@@ -26,11 +26,11 @@ export function decodeWithOtpCipher(ciphertext: string, key: string) {
 
   const cipherChars = ciphertext
     .match(/../g)!
-    .map((hex) => String.fromCharCode(parseInt(hex, 16)))
+    .map((hex) => String.fromCharCode(Number.parseInt(hex, 16)))
     .join('');
   const keyChars = key
     .match(/../g)!
-    .map((hex) => String.fromCharCode(parseInt(hex, 16)))
+    .map((hex) => String.fromCharCode(Number.parseInt(hex, 16)))
     .join('');
 
   return xorStrings(cipherChars, keyChars);

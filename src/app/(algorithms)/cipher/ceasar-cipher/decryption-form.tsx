@@ -17,7 +17,7 @@ import { Form } from '@/components/ui/form';
 import { FormInput } from '@/components/ui/form/form-input';
 
 import { decryptWithCaesarCipher } from '@/algorithms/cipher/ceasar-cipher';
-import { ceasarCipherFormSchema, CeasarCipherFormValues } from './validation';
+import { ceasarCipherFormSchema, type CeasarCipherFormValues } from './validation';
 
 export function DecryptionForm() {
   const form = useForm<CeasarCipherFormValues>({

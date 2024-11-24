@@ -19,8 +19,8 @@ import { FormInput } from '@/components/ui/form/form-input';
 
 import { encryptWithPlayfairCipher } from '@/algorithms/cipher/playfair-cipher';
 import {
+  type PlayfairCipherFormValues,
   playfairCipherFormSchema,
-  PlayfairCipherFormValues,
 } from './validation';
 
 export function EncryptionForm() {

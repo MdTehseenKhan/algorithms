@@ -16,6 +16,7 @@ export const CopyToClipboard = ({
   const [copied, setCopied] = useState(false);
 
   const copyToClipboard = async () => {
+    if (copied) return;
     try {
       await navigator.clipboard.writeText(code);
       toast.success('Copied to clipboard');
@@ -28,12 +29,13 @@ export const CopyToClipboard = ({
 
   return (
     <button
+      type="button"
       onClick={copyToClipboard}
+      aria-label={copied ? 'Copied' : 'Copy to clipboard'}
       className={cn(
         'relative p-2 hover:bg-secondary/10 rounded-sm outline-none overflow-hidden',
         className
       )}
-      aria-label={copied ? 'Copied' : 'Copy to clipboard'}
     >
       <CopyIcon
         className={cn(

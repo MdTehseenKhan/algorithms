@@ -1,7 +1,8 @@
 import 'server-only';
 
+import type { NextRequest } from 'next/server';
+
 import { headers } from 'next/headers';
-import { NextRequest } from 'next/server';
 
 export function getRequestHeaders(request: NextRequest) {
   const correlationId =

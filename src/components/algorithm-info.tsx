@@ -64,7 +64,7 @@ function TimeComplexity({
   return (
     <p className="flex justify-between items-center gap-4 text-sm text-muted-foreground">
       <span>{title}</span>
-      <span className="flex h-px flex-1 bg-muted-foreground/50"></span>
+      <span className="flex h-px flex-1 bg-muted-foreground/50" />
       <span>{complexity}</span>
     </p>
   );

@@ -19,7 +19,7 @@ import { FormInput } from '@/components/ui/form/form-input';
 import { decodeWithOtpCipher } from '@/algorithms/cipher/otp-cipher';
 import {
   otpCipherDecodingFormSchema,
-  OtpCipherDecodingFormValues,
+  type OtpCipherDecodingFormValues,
 } from './validation';
 
 export function DecodingForm() {

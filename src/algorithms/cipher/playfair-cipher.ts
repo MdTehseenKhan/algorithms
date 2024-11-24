@@ -3,23 +3,19 @@ function createGrid(key: string) {
   const uniqueChars: { [key: string]: boolean } = {};
   const grid: string[] = [];
 
-  key
-    .toUpperCase()
-    .replace(/J/g, 'I')
-    .split('')
-    .forEach((char) => {
-      if (!uniqueChars[char]) {
-        uniqueChars[char] = true;
-        grid.push(char);
-      }
-    });
-
-  alphabet.split('').forEach((char) => {
+  for (const char of key.toUpperCase().replace(/J/g, 'I')) {
     if (!uniqueChars[char]) {
       uniqueChars[char] = true;
       grid.push(char);
     }
-  });
+  }
+
+  for (const char of alphabet) {
+    if (!uniqueChars[char]) {
+      uniqueChars[char] = true;
+      grid.push(char);
+    }
+  }
 
   return grid;
 }
@@ -64,13 +60,13 @@ function encryptDigraph(grid: string[], digraph: string) {
     return (
       grid[rowA * 5 + ((colA + 1) % 5)] + grid[rowB * 5 + ((colB + 1) % 5)]
     );
-  } else if (colA === colB) {
+  }
+  if (colA === colB) {
     return (
       grid[((rowA + 1) % 5) * 5 + colA] + grid[((rowB + 1) % 5) * 5 + colB]
     );
-  } else {
-    return grid[rowA * 5 + colB] + grid[rowB * 5 + colA];
   }
+  return grid[rowA * 5 + colB] + grid[rowB * 5 + colA];
 }
 
 function decryptDigraph(grid: string[], digraph: string) {
@@ -83,14 +79,14 @@ function decryptDigraph(grid: string[], digraph: string) {
       grid[rowA * 5 + ((colA - 1 + 5) % 5)] +
       grid[rowB * 5 + ((colB - 1 + 5) % 5)]
     );
-  } else if (colA === colB) {
+  }
+  if (colA === colB) {
     return (
       grid[((rowA - 1 + 5) % 5) * 5 + colA] +
       grid[((rowB - 1 + 5) % 5) * 5 + colB]
     );
-  } else {
-    return grid[rowA * 5 + colB] + grid[rowB * 5 + colA];
   }
+  return grid[rowA * 5 + colB] + grid[rowB * 5 + colA];
 }
 
 export function encryptWithPlayfairCipher(plaintext: string, key: string) {

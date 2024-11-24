@@ -1,6 +1,5 @@
 import type { BundledLanguage, BundledTheme } from 'shiki';
-
-import * as React from 'react';
+import type { AlgorithmCode } from '@/utils/algorithms';
 // import {
 //   transformerNotationDiff,
 //   transformerNotationHighlight,
@@ -9,7 +8,6 @@ import { codeToHtml } from 'shiki';
 
 import { CopyToClipboard } from '@/components/ui/copy-to-clipboard';
 
-import { AlgorithmCode } from '@/utils/algorithms';
 
 type CodeBlockProps = {
   codes: AlgorithmCode[];
@@ -39,8 +37,9 @@ const CodeBlock: React.FC<CodeBlockProps> = async ({
       </div>
       <div
         className="rounded-b-md border-t-2 border-neutral-700 text-sm [&>pre]:overflow-x-auto [&>pre]:!bg-neutral-900 [&>pre]:py-3 [&>pre]:pl-4 [&>pre]:pr-5 [&>pre]:leading-snug [&_code]:block [&_code]:w-fit [&_code]:min-w-full overflow-y-auto"
+        // biome-ignore lint: Dangerous html
         dangerouslySetInnerHTML={{ __html: html }}
-      ></div>
+      />
     </div>
     // </div>
   );

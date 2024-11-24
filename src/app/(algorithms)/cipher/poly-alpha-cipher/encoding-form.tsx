@@ -18,8 +18,8 @@ import { FormInput } from '@/components/ui/form/form-input';
 
 import { encodeWithPolyAlphaCipher } from '@/algorithms/cipher/poly-alpha-cipher';
 import {
+  type PolyAlphaCipherFormValues,
   polyAlphaCipherFormSchema,
-  PolyAlphaCipherFormValues,
 } from './validation';
 
 export function EncodingForm() {
