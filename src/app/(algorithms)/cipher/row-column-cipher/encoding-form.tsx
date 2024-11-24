@@ -1,9 +1,8 @@
 'use client';
 
 import { zodResolver } from '@hookform/resolvers/zod';
-import { LockOpenIcon } from 'lucide-react';
+import { LockIcon } from 'lucide-react';
 import { useForm } from 'react-hook-form';
-import { toast } from 'sonner';
 
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { Button } from '@/components/ui/button';
@@ -17,46 +16,48 @@ import {
 import { Form } from '@/components/ui/form';
 import { FormInput } from '@/components/ui/form/form-input';
 
-import { decryptWithPlayfairCipher } from '@/algorithms/cipher/playfair-cipher';
+import { encodeWithRowColumnCipher } from '@/algorithms/cipher/row-column-cipher';
+import { toast } from 'sonner';
 import {
-  type PlayfairCipherFormValues,
-  playfairCipherFormSchema,
+  type RowColumnCipherFormValues,
+  rowColumnCipherFormSchema,
 } from './validation';
 
-export function DecryptionForm() {
-  const form = useForm<PlayfairCipherFormValues>({
-    resolver: zodResolver(playfairCipherFormSchema),
+export function EncodingForm() {
+  const form = useForm<RowColumnCipherFormValues>({
+    resolver: zodResolver(rowColumnCipherFormSchema),
     defaultValues: {
       message: '',
-      decryptedMessage: '',
-      key: '',
+      encodedMessage: '',
+      key: undefined,
     },
   });
-  const decryptedMessage = form.watch('decryptedMessage');
+  const encodedMessage = form.watch('encodedMessage');
 
-  const handleClearDecryptedMessage = () => {
-    if (decryptedMessage) {
-      form.setValue('decryptedMessage', '');
+  const handleClearEncodedMessage = () => {
+    if (encodedMessage) {
+      form.setValue('encodedMessage', '');
     }
   };
 
-  const onSubmit = async (data: PlayfairCipherFormValues) => {
+  const onSubmit = async (data: RowColumnCipherFormValues) => {
     try {
-      const decryptedGrid = decryptWithPlayfairCipher(data.message, data.key);
-      form.setValue('decryptedMessage', decryptedGrid);
-      await navigator.clipboard.writeText(decryptedGrid);
-      toast.success('Decrypted message copied to clipboard');
+      const _encodedMessage = encodeWithRowColumnCipher(data.message, data.key);
+      form.setValue('encodedMessage', _encodedMessage);
+      await navigator.clipboard.writeText(_encodedMessage);
+      toast.success('Encoded message copied to clipboard');
     } catch (error) {
-      toast.error('Invalid key, please try again!');
+      toast.error('Error Encoding');
+      console.error('Error Encoding', { error });
     }
   };
 
   return (
     <Card>
       <CardHeader>
-        <CardTitle className="text-xl">Decryption</CardTitle>
+        <CardTitle className="text-xl">Encoding</CardTitle>
         <CardDescription>
-          Decode your message using the Playfair Cipher
+          Encode your message using the Row Column cipher
         </CardDescription>
       </CardHeader>
 
@@ -68,28 +69,29 @@ export function DecryptionForm() {
               fieldName="message"
               fieldLabel="Message"
               placeholder="Enter message here"
-              onChange={handleClearDecryptedMessage}
+              onChange={handleClearEncodedMessage}
               required
             />
             <FormInput
               form={form}
+              type="number"
               fieldName="key"
               fieldLabel="Key"
               placeholder="Enter key here"
-              onChange={handleClearDecryptedMessage}
+              onChange={handleClearEncodedMessage}
               required
             />
             <Button type="submit" className="w-full">
-              Decrypt
+              Encode
             </Button>
           </form>
         </Form>
 
-        {decryptedMessage && (
+        {encodedMessage && (
           <Alert className="mt-4" variant="success">
-            <LockOpenIcon className="size-4" />
-            <AlertTitle>Decrypted Grid</AlertTitle>
-            <AlertDescription>{decryptedMessage}</AlertDescription>
+            <LockIcon className="size-4" />
+            <AlertTitle>Encoded Message</AlertTitle>
+            <AlertDescription>{encodedMessage}</AlertDescription>
           </Alert>
         )}
       </CardContent>

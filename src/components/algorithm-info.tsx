@@ -1,6 +1,7 @@
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Container } from '@/components/ui/container';
 import { CodeViewer } from '@/components/code-viewer';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { CodeBlock } from '@/components/ui/codeblock';
+import { Container } from '@/components/ui/container';
 
 import { algorithms } from '@/utils/algorithms';
 
@@ -47,7 +48,9 @@ export const AlgorithmInfo = ({ algorithmName }: { algorithmName: string }) => {
       <Container>
         <div className="flex justify-between px-6 mb-4">
           <h1 className="text-2xl font-semibold">Implementation</h1>
-          <CodeViewer filename={algorithmName} codes={algorithm.codes} />
+          <CodeViewer>
+            <CodeBlock filename={algorithmName} codes={algorithm.codes} />
+          </CodeViewer>
         </div>
       </Container>
     </div>

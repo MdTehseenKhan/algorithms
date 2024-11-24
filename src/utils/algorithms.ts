@@ -319,4 +319,267 @@ export function decryptWithPlayfairCipher(ciphertext: string, key: string) {
       },
     ],
   },
+  'rail-fence-cipher': {
+    title: 'Rail Fence Cipher',
+    description: `The Rail Fence cipher creates a zigzag pattern using multiple "rails" (horizontal lines). The plaintext is written downwards diagonally on these rails, bouncing up when it reaches the bottom rail and down when it reaches the top rail, creating a fence-like pattern. The ciphertext is formed by reading each rail horizontally from left to right, top to bottom. Think of it like writing your message on a zigzag train track and then reading each track line by line. The number of rails determines the pattern's complexity and thus affects the cipher's strength.`,
+    bestCase: 'O(n²)',
+    averageCase: 'O(n²)',
+    worstCase: 'O(n²)',
+    codes: [
+      {
+        language: 'TypeScript',
+        code: `export function encodeWithRailFenceCipher(text: string, rails: number): string {
+  const fence = getEmptyFence(rails, text.length);
+  let rail = 0;
+  let direction = 1;
+
+  for (let i = 0; i < text.length; i++) {
+    fence[rail][i] = text[i];
+    if (rail === 0) direction = 1;
+    if (rail === rails - 1) direction = -1;
+    rail += direction;
+  }
+
+  return fence
+    .flat()
+    .filter((char) => char)
+    .join('');
+}
+
+export function decodeWithRailFenceCipher(text: string, rails: number): string {
+  const fence = getEmptyFence(rails, text.length);
+  let rail = 0;
+  let direction = 1;
+
+  for (let i = 0; i < text.length; i++) {
+    fence[rail][i] = '*';
+    if (rail === 0) direction = 1;
+    if (rail === rails - 1) direction = -1;
+    rail += direction;
+  }
+
+  let index = 0;
+  for (let i = 0; i < rails; i++) {
+    for (let j = 0; j < text.length; j++) {
+      if (fence[i][j] === '*' && index < text.length) {
+        fence[i][j] = text[index++];
+      }
+    }
+  }
+
+  let result = '';
+  rail = 0;
+  direction = 1;
+
+  for (let i = 0; i < text.length; i++) {
+    result += fence[rail][i];
+    if (rail === 0) direction = 1;
+    if (rail === rails - 1) direction = -1;
+    rail += direction;
+  }
+
+  return result;
+}
+
+function getEmptyFence(rails: number, length: number): string[][] {
+  return Array(rails)
+    .fill('')
+    .map(() => Array(length).fill(''));
+}`,
+      },
+    ],
+  },
+  'hill-cipher': {
+    title: 'Hill Cipher',
+    description:
+      'The Hill cipher is a polygraphic substitution cipher based on linear algebra. It encrypts blocks of text using matrix multiplication with a key matrix. In a 2x2 implementation, it processes two letters at a time, converting them to numbers (A=0, B=1, etc.), multiplying them with a 2x2 key matrix, and converting the results back to letters modulo 26. Decryption uses the inverse of the key matrix. Think of it as transforming pairs of letters through a mathematical function - like feeding coordinates through a geometric transformation. The strength lies in its mathematical properties and block encryption nature.',
+    bestCase: 'O(n)',
+    averageCase: 'O(n)',
+    worstCase: 'O(n)',
+    codes: [
+      {
+        language: 'TypeScript',
+        code: `interface Matrix {
+  a: number;
+  b: number;
+  c: number;
+  d: number;
+}
+
+export function encodeWithHillCipher(text: string, key: Matrix): string {
+  const normalized = text.replace(/[^A-Z]/g, '').toUpperCase();
+  if (normalized.length % 2 !== 0) throw new Error('Text length must be even');
+
+  let result = '';
+  for (let i = 0; i < normalized.length; i += 2) {
+    const p1 = normalized.charCodeAt(i) - 65;
+    const p2 = normalized.charCodeAt(i + 1) - 65;
+
+    const c1 = (key.a * p1 + key.b * p2) % 26;
+    const c2 = (key.c * p1 + key.d * p2) % 26;
+
+    result += String.fromCharCode(c1 + 65);
+    result += String.fromCharCode(c2 + 65);
+  }
+
+  return result;
+}
+
+export function decodeWithHillCipher(text: string, key: Matrix): string {
+  const determinant = (key.a * key.d - key.b * key.c) % 26;
+  const determinantInv = modInverse(determinant, 26);
+
+  const adjKey: Matrix = {
+    a: key.d,
+    b: -key.b,
+    c: -key.c,
+    d: key.a,
+  };
+
+  const inverseKey: Matrix = {
+    a: (adjKey.a * determinantInv) % 26,
+    b: (adjKey.b * determinantInv) % 26,
+    c: (adjKey.c * determinantInv) % 26,
+    d: (adjKey.d * determinantInv) % 26,
+  };
+
+  return encodeWithHillCipher(text, inverseKey);
+}
+
+function modInverse(a: number, m: number): number {
+  const normalizedA = ((a % m) + m) % m;
+  for (let x = 1; x < m; x++) {
+    if ((normalizedA * x) % m === 1) return x;
+  }
+  throw new Error('Modular multiplicative inverse does not exist');
+}`,
+      },
+    ],
+  },
+  'row-column-cipher': {
+    title: 'Row Column Cipher',
+    description:
+      'The Row Column cipher is a simple transposition cipher that rearranges text using a matrix. The process involves writing the text row by row into a grid with a fixed number of columns (determined by the key), then reading it column by column to produce the encrypted text. For decryption, the process is reversed - the ciphertext is written column by column and read row by row. Imagine writing your message on a grid of paper, then reading it in a different direction. The security relies on the mixing up of character positions rather than substituting characters.',
+    bestCase: 'O(n²)',
+    averageCase: 'O(n²)',
+    worstCase: 'O(n²)',
+    codes: [
+      {
+        language: 'TypeScript',
+        code: `export function encodeWithRowColumnCipher(text: string, key: number): string {
+  const normalized = text.replace(/\s/g, '').toUpperCase();
+  const cols = key;
+  const rows = Math.ceil(normalized.length / cols);
+  const matrix = getEmptyMatrix(rows, cols);
+
+  let idx = 0;
+  for (let i = 0; i < rows; i++) {
+    for (let j = 0; j < cols && idx < normalized.length; j++) {
+      matrix[i][j] = normalized[idx++];
+    }
+  }
+
+  let result = '';
+  for (let j = 0; j < cols; j++) {
+    for (let i = 0; i < rows; i++) {
+      if (matrix[i][j]) result += matrix[i][j];
+    }
+  }
+
+  return result;
+}
+
+export function decodeWithRowColumnCipher(text: string, key: number): string {
+  const cols = key;
+  const rows = Math.ceil(text.length / cols);
+  const matrix = getEmptyMatrix(rows, cols);
+
+  let idx = 0;
+  for (let j = 0; j < cols; j++) {
+    for (let i = 0; i < rows && idx < text.length; i++) {
+      matrix[i][j] = text[idx++];
+    }
+  }
+
+  let result = '';
+  for (let i = 0; i < rows; i++) {
+    for (let j = 0; j < cols; j++) {
+      if (matrix[i][j]) result += matrix[i][j];
+    }
+  }
+
+  return result;
+}
+
+function getEmptyMatrix(rows: number, cols: number): string[][] {
+  return Array(rows)
+    .fill('')
+    .map(() => Array(cols).fill(''));
+}`,
+      },
+    ],
+  },
+  'des-cipher': {
+    title: 'DES Cipher',
+    description:
+      'The simplified DES (Data Encryption Standard) implementation works by breaking the input text into fixed-size blocks (8 bits each) and applying a series of transformations using a key. Each block undergoes an XOR operation with the key bits, effectively scrambling the data. Think of it as mixing your message with a secret pattern, where each bit of your message is combined with a corresponding bit from your key. While this is a highly simplified version, the actual DES uses complex permutations, substitutions, and multiple rounds of transformation.',
+    bestCase: 'O(n)',
+    averageCase: 'O(n)',
+    worstCase: 'O(n)',
+    codes: [
+      {
+        language: 'TypeScript',
+        code: `// Simplified DES (for educational purposes only - not cryptographically secure)
+export function encodeWithDESCipher(text: string, key: string): string {
+  const blocks = text.match(/.{1,8}/g) || [];
+  let result = '';
+  for (const block of blocks) {
+    const binary = stringToBinary(block.padEnd(8, ' '));
+    const keyBinary = stringToBinary(key.padEnd(8, ' '));
+    const encrypted = simpleDESRound(binary, keyBinary);
+    result += binaryToString(encrypted);
+  }
+  return result;
+}
+
+export function decodeWithDESCipher(text: string, key: string): string {
+  const blocks = text.match(/.{1,8}/g) || [];
+  let result = '';
+  for (const block of blocks) {
+    const binary = stringToBinary(block);
+    const keyBinary = stringToBinary(key.padEnd(8, ' '));
+    const decrypted = simpleDESRound(binary, keyBinary);
+    result += binaryToString(decrypted).trim();
+  }
+  return result;
+}
+
+// Helper functions for simplified DES
+function stringToBinary(str: string): string {
+  return str
+    .split('')
+    .map((char) => char.charCodeAt(0).toString(2).padStart(8, '0'))
+    .join('');
+}
+
+function binaryToString(binary: string): string {
+  const bytes = binary.match(/.{1,8}/g) || [];
+  return bytes
+    .map((byte) => String.fromCharCode(Number.parseInt(byte, 2)))
+    .join('');
+}
+
+function simpleDESRound(data: string, key: string): string {
+  // Simple XOR operation for demonstration
+  return data
+    .split('')
+    .map((bit, i) =>
+      (Number.parseInt(bit) ^ Number.parseInt(key[i % key.length])).toString()
+    )
+    .join('');
+}
+`,
+      },
+    ],
+  },
 };

@@ -17,6 +17,7 @@ import { Form } from '@/components/ui/form';
 import { FormInput } from '@/components/ui/form/form-input';
 
 import { decodeWithPolyAlphaCipher } from '@/algorithms/cipher/poly-alpha-cipher';
+import { toast } from 'sonner';
 import {
   type PolyAlphaCipherFormValues,
   polyAlphaCipherFormSchema,
@@ -45,10 +46,16 @@ export function DecodingForm() {
     }
   };
 
-  const onSubmit = (data: PolyAlphaCipherFormValues) => {
+  const onSubmit = async (data: PolyAlphaCipherFormValues) => {
     const keys = data.keys.map((key) => key.key);
     const _decodedMessage = decodeWithPolyAlphaCipher(data.message, keys);
     form.setValue('decodedMessage', _decodedMessage);
+    try {
+      await navigator.clipboard.writeText(_decodedMessage);
+      toast.success('Decoded message copied to clipboard');
+    } catch (error) {
+      console.error('Error copying to clipboard', { error });
+    }
   };
 
   return (

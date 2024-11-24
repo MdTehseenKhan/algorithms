@@ -17,7 +17,11 @@ import { Form } from '@/components/ui/form';
 import { FormInput } from '@/components/ui/form/form-input';
 
 import { encryptWithCaesarCipher } from '@/algorithms/cipher/ceasar-cipher';
-import { ceasarCipherFormSchema, type CeasarCipherFormValues } from './validation';
+import { toast } from 'sonner';
+import {
+  type CeasarCipherFormValues,
+  ceasarCipherFormSchema,
+} from './validation';
 
 export function EncryptionForm() {
   const form = useForm<CeasarCipherFormValues>({
@@ -36,9 +40,15 @@ export function EncryptionForm() {
     }
   };
 
-  const onSubmit = (data: CeasarCipherFormValues) => {
+  const onSubmit = async (data: CeasarCipherFormValues) => {
     const _encryptedMessage = encryptWithCaesarCipher(data.message, data.shift);
     form.setValue('encryptedMessage', _encryptedMessage);
+    try {
+      await navigator.clipboard.writeText(_encryptedMessage);
+      toast.success('Encrypted message copied to clipboard');
+    } catch (error) {
+      console.error('Error copying to clipboard', { error });
+    }
   };
 
   return (

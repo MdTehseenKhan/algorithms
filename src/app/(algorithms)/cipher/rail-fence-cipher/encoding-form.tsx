@@ -16,20 +16,21 @@ import {
 import { Form } from '@/components/ui/form';
 import { FormInput } from '@/components/ui/form/form-input';
 
-import { encodeWithOtpCipher } from '@/algorithms/cipher/otp-cipher';
+import { encodeWithRailFenceCipher } from '@/algorithms/cipher/rail-fence-cipher';
 import { toast } from 'sonner';
 import {
-  type OtpCipherEncodingFormValues,
-  otpCipherEncodingFormSchema,
+  type RailFenceCipherFormValues,
+  railFenceCipherFormSchema,
 } from './validation';
 
 export function EncodingForm() {
-  const form = useForm<OtpCipherEncodingFormValues>({
-    resolver: zodResolver(otpCipherEncodingFormSchema),
+  const form = useForm<RailFenceCipherFormValues>({
+    resolver: zodResolver(railFenceCipherFormSchema),
     defaultValues: {
       message: '',
+      rails: undefined,
       encodedMessage: '',
-      key: '',
+      decodedMessage: '',
     },
   });
   const encodedMessage = form.watch('encodedMessage');
@@ -40,15 +41,18 @@ export function EncodingForm() {
     }
   };
 
-  const onSubmit = async (data: OtpCipherEncodingFormValues) => {
-    const encodedData = encodeWithOtpCipher(data.message, data.key);
-    form.setValue('encodedMessage', encodedData.ciphertext);
-    form.setValue('key', encodedData.key);
+  const onSubmit = async (data: RailFenceCipherFormValues) => {
     try {
-      await navigator.clipboard.writeText(encodedData.ciphertext);
+      const _encodedMessage = encodeWithRailFenceCipher(
+        data.message,
+        Number(data.rails)
+      );
+      form.setValue('encodedMessage', _encodedMessage);
+      await navigator.clipboard.writeText(_encodedMessage);
       toast.success('Encoded message copied to clipboard');
     } catch (error) {
-      console.error('Error copying to clipboard', { error });
+      toast.error('Error Encoding');
+      console.error('Error Encoding', { error });
     }
   };
 
@@ -57,7 +61,7 @@ export function EncodingForm() {
       <CardHeader>
         <CardTitle className="text-xl">Encoding</CardTitle>
         <CardDescription>
-          Encode your message using the One-Time Pad cipher
+          Encode your message using the Rail Fence cipher
         </CardDescription>
       </CardHeader>
 
@@ -74,10 +78,12 @@ export function EncodingForm() {
             />
             <FormInput
               form={form}
-              fieldName="key"
-              fieldLabel="Key (optional)"
-              placeholder="Enter key here"
+              type="number"
+              fieldName="rails"
+              fieldLabel="Rails"
+              placeholder="Enter rails here"
               onChange={handleClearEncodedMessage}
+              required
             />
             <Button type="submit" className="w-full">
               Encode
@@ -86,18 +92,11 @@ export function EncodingForm() {
         </Form>
 
         {encodedMessage && (
-          <>
-            <Alert className="mt-4" variant="success">
-              <LockIcon className="size-4" />
-              <AlertTitle>Encoded Message</AlertTitle>
-              <AlertDescription>{encodedMessage}</AlertDescription>
-            </Alert>
-            <Alert className="mt-4" variant="success">
-              <LockIcon className="size-4" />
-              <AlertTitle>Key</AlertTitle>
-              <AlertDescription>{form.getValues('key')}</AlertDescription>
-            </Alert>
-          </>
+          <Alert className="mt-4" variant="success">
+            <LockIcon className="size-4" />
+            <AlertTitle>Encoded Message</AlertTitle>
+            <AlertDescription>{encodedMessage}</AlertDescription>
+          </Alert>
         )}
       </CardContent>
     </Card>

@@ -1,47 +1,31 @@
-import type { AlgorithmCode } from '@/utils/algorithms';
-import type { FC } from 'react';
+'use client';
+
+import type { FC, PropsWithChildren } from 'react';
 
 import { Button } from '@/components/ui/button';
-import { CodeBlock } from '@/components/ui/codeblock';
 import { Drawer, DrawerContent, DrawerTrigger } from '@/components/ui/drawer';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
+import { useMediaQuery } from '@/core/hooks/use-media-query';
 
-interface CodeViewerProps {
-  codes: AlgorithmCode[];
-  filename?: string;
-}
+export const CodeViewer: FC<PropsWithChildren> = ({ children }) => {
+  const isDesktop = useMediaQuery('(min-width: 768px)');
 
-export const CodeViewer: FC<CodeViewerProps> = ({ codes, filename }) => {
+  const Panel = isDesktop ? Sheet : Drawer;
+  const PanelTrigger = isDesktop ? SheetTrigger : DrawerTrigger;
+  const PanelContent = isDesktop ? SheetContent : DrawerContent;
+
   return (
-    <>
-      <div className="md:hidden">
-        <Drawer>
-          <DrawerTrigger asChild>
-            <Button size="sm" variant="secondary">
-              View Code
-            </Button>
-          </DrawerTrigger>
-          <DrawerContent className="h-2/3">
-            <div className="relative overflow-y-auto px-4">
-              <CodeBlock filename={filename} codes={codes} />
-            </div>
-          </DrawerContent>
-        </Drawer>
-      </div>
-      <div className="hidden md:block">
-        <Sheet>
-          <SheetTrigger asChild>
-            <Button size="sm" variant="secondary">
-              View Code
-            </Button>
-          </SheetTrigger>
-          <SheetContent className="md:min-w-[800px] p-0">
-            <div className="h-full overflow-y-auto px-4 py-12">
-              <CodeBlock filename={filename} codes={codes} />
-            </div>
-          </SheetContent>
-        </Sheet>
-      </div>
-    </>
+    <Panel>
+      <PanelTrigger asChild>
+        <Button size="sm" variant="secondary">
+          View Code
+        </Button>
+      </PanelTrigger>
+      <PanelContent className="h-2/3 md:h-full md:min-w-[800px] p-0">
+        <div className="relative overflow-y-auto p-4 h-full md:py-12">
+          {children}
+        </div>
+      </PanelContent>
+    </Panel>
   );
 };

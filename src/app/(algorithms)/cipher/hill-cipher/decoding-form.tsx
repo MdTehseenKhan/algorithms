@@ -16,20 +16,20 @@ import {
 import { Form } from '@/components/ui/form';
 import { FormInput } from '@/components/ui/form/form-input';
 
-import { decodeWithOtpCipher } from '@/algorithms/cipher/otp-cipher';
+import { decodeWithHillCipher } from '@/algorithms/cipher/hill-cipher';
 import { toast } from 'sonner';
-import {
-  type OtpCipherDecodingFormValues,
-  otpCipherDecodingFormSchema,
-} from './validation';
+import { type HillCipherFormValues, hillCipherFormSchema } from './validation';
 
 export function DecodingForm() {
-  const form = useForm<OtpCipherDecodingFormValues>({
-    resolver: zodResolver(otpCipherDecodingFormSchema),
+  const form = useForm<HillCipherFormValues>({
+    resolver: zodResolver(hillCipherFormSchema),
     defaultValues: {
       message: '',
       decodedMessage: '',
-      key: '',
+      a: 0,
+      b: 0,
+      c: 0,
+      d: 0,
     },
   });
   const decodedMessage = form.watch('decodedMessage');
@@ -40,14 +40,16 @@ export function DecodingForm() {
     }
   };
 
-  const onSubmit = async (data: OtpCipherDecodingFormValues) => {
-    const _decodedMessage = decodeWithOtpCipher(data.message, data.key);
-    form.setValue('decodedMessage', _decodedMessage);
+  const onSubmit = async ({ message, a, b, c, d }: HillCipherFormValues) => {
     try {
+      const matrix = { a, b, c, d };
+      const _decodedMessage = decodeWithHillCipher(message, matrix);
+      form.setValue('decodedMessage', _decodedMessage);
       await navigator.clipboard.writeText(_decodedMessage);
       toast.success('Decoded message copied to clipboard');
     } catch (error) {
-      console.error('Error copying to clipboard', { error });
+      toast.error('Error Decoding');
+      console.error('Error Decoding', { error });
     }
   };
 
@@ -56,7 +58,7 @@ export function DecodingForm() {
       <CardHeader>
         <CardTitle className="text-xl">Decoding</CardTitle>
         <CardDescription>
-          Decode your message using the One-Time Pad cipher
+          Decode your message using the Hill cipher
         </CardDescription>
       </CardHeader>
 
@@ -71,14 +73,44 @@ export function DecodingForm() {
               onChange={handleClearDecodedMessage}
               required
             />
-            <FormInput
-              form={form}
-              fieldName="key"
-              fieldLabel="Key"
-              placeholder="Enter key here"
-              onChange={handleClearDecodedMessage}
-              required
-            />
+            <div className="grid grid-cols-2 gap-4">
+              <FormInput
+                form={form}
+                type="number"
+                fieldName="a"
+                fieldLabel="A"
+                placeholder="Enter A here"
+                onChange={handleClearDecodedMessage}
+                required
+              />
+              <FormInput
+                form={form}
+                type="number"
+                fieldName="b"
+                fieldLabel="B"
+                placeholder="Enter B here"
+                onChange={handleClearDecodedMessage}
+                required
+              />
+              <FormInput
+                form={form}
+                type="number"
+                fieldName="c"
+                fieldLabel="C"
+                placeholder="Enter C here"
+                onChange={handleClearDecodedMessage}
+                required
+              />
+              <FormInput
+                form={form}
+                type="number"
+                fieldName="d"
+                fieldLabel="D"
+                placeholder="Enter D here"
+                onChange={handleClearDecodedMessage}
+                required
+              />
+            </div>
             <Button type="submit" className="w-full">
               Decode
             </Button>

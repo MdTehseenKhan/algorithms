@@ -16,47 +16,51 @@ import {
 import { Form } from '@/components/ui/form';
 import { FormInput } from '@/components/ui/form/form-input';
 
-import { decryptWithCaesarCipher } from '@/algorithms/cipher/ceasar-cipher';
+import { decodeWithRailFenceCipher } from '@/algorithms/cipher/rail-fence-cipher';
 import { toast } from 'sonner';
 import {
-  type CeasarCipherFormValues,
-  ceasarCipherFormSchema,
+  type RailFenceCipherFormValues,
+  railFenceCipherFormSchema,
 } from './validation';
 
-export function DecryptionForm() {
-  const form = useForm<CeasarCipherFormValues>({
-    resolver: zodResolver(ceasarCipherFormSchema),
+export function DecodingForm() {
+  const form = useForm<RailFenceCipherFormValues>({
+    resolver: zodResolver(railFenceCipherFormSchema),
     defaultValues: {
       message: '',
-      decryptedMessage: '',
-      shift: 3,
+      decodedMessage: '',
+      rails: undefined,
     },
   });
-  const decryptedMessage = form.watch('decryptedMessage');
+  const decodedMessage = form.watch('decodedMessage');
 
-  const handleClearDecryptedMessage = () => {
-    if (decryptedMessage) {
-      form.setValue('decryptedMessage', '');
+  const handleClearDecodedMessage = () => {
+    if (decodedMessage) {
+      form.setValue('decodedMessage', '');
     }
   };
 
-  const onSubmit = async (data: CeasarCipherFormValues) => {
-    const _decryptedMessage = decryptWithCaesarCipher(data.message, data.shift);
-    form.setValue('decryptedMessage', _decryptedMessage);
+  const onSubmit = async (data: RailFenceCipherFormValues) => {
     try {
-      await navigator.clipboard.writeText(_decryptedMessage);
-      toast.success('Decrypted message copied to clipboard');
+      const _decodedMessage = decodeWithRailFenceCipher(
+        data.message,
+        data.rails
+      );
+      form.setValue('decodedMessage', _decodedMessage);
+      await navigator.clipboard.writeText(_decodedMessage);
+      toast.success('Decoded message copied to clipboard');
     } catch (error) {
-      console.error('Error copying to clipboard', { error });
+      toast.error('Error Decoding');
+      console.error('Error Decoding', { error });
     }
   };
 
   return (
     <Card>
       <CardHeader>
-        <CardTitle className="text-xl">Decryption</CardTitle>
+        <CardTitle className="text-xl">Decoding</CardTitle>
         <CardDescription>
-          Decrypt your message using the Caesar cipher
+          Decode your message using the Rail Fence cipher
         </CardDescription>
       </CardHeader>
 
@@ -68,31 +72,29 @@ export function DecryptionForm() {
               fieldName="message"
               fieldLabel="Message"
               placeholder="Enter message here"
-              onChange={handleClearDecryptedMessage}
+              onChange={handleClearDecodedMessage}
               required
             />
             <FormInput
               form={form}
               type="number"
-              min={1}
-              max={26}
-              fieldName="shift"
-              fieldLabel="Number of shifts"
-              placeholder="Enter number of shifts here"
-              onChange={handleClearDecryptedMessage}
+              fieldName="rails"
+              fieldLabel="Rails"
+              placeholder="Enter rails here"
+              onChange={handleClearDecodedMessage}
               required
             />
             <Button type="submit" className="w-full">
-              Decrypt
+              Decode
             </Button>
           </form>
         </Form>
 
-        {decryptedMessage && (
+        {decodedMessage && (
           <Alert className="mt-4" variant="success">
             <LockOpenIcon className="size-4" />
-            <AlertTitle>Decrypted Message</AlertTitle>
-            <AlertDescription>{decryptedMessage}</AlertDescription>
+            <AlertTitle>Decoded Message</AlertTitle>
+            <AlertDescription>{decodedMessage}</AlertDescription>
           </Alert>
         )}
       </CardContent>

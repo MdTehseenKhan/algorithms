@@ -40,6 +40,30 @@ const algorithms = [
     description: 'Encode/Decode your message using the Playfair cipher',
     link: '/cipher/playfair-cipher',
   },
+  {
+    id: 6,
+    name: 'Rail Fence Cipher',
+    description: 'Encode/Decode your message using the Rail Fence cipher',
+    link: '/cipher/rail-fence-cipher',
+  },
+  {
+    id: 7,
+    name: 'Hill Cipher',
+    description: 'Encode/Decode your message using the Hill cipher',
+    link: '/cipher/hill-cipher',
+  },
+  {
+    id: 8,
+    name: 'Row Column Cipher',
+    description: 'Encode/Decode your message using the Row Column cipher',
+    link: '/cipher/row-column-cipher',
+  },
+  {
+    id: 9,
+    name: 'DES Cipher',
+    description: 'Encode/Decode your message using the DES cipher',
+    link: '/cipher/des-cipher',
+  },
 ];
 
 export default function HomePage() {

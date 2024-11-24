@@ -40,10 +40,12 @@ export function EncryptionForm() {
     }
   };
 
-  const onSubmit = (data: PlayfairCipherFormValues) => {
+  const onSubmit = async (data: PlayfairCipherFormValues) => {
     try {
       const encryptedGrid = encryptWithPlayfairCipher(data.message, data.key);
       form.setValue('encryptedMessage', encryptedGrid);
+      await navigator.clipboard.writeText(encryptedGrid);
+      toast.success('Encrypted message copied to clipboard');
     } catch (error) {
       toast.error('Invalid key, please try again!');
     }
