@@ -6,7 +6,6 @@ import { CodeBlock } from '@/components/ui/codeblock';
 import { Drawer, DrawerContent, DrawerTrigger } from '@/components/ui/drawer';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
 
-
 interface CodeViewerProps {
   codes: AlgorithmCode[];
   filename?: string;
@@ -22,8 +21,8 @@ export const CodeViewer: FC<CodeViewerProps> = ({ codes, filename }) => {
               View Code
             </Button>
           </DrawerTrigger>
-          <DrawerContent className="h-2/3 justify-center">
-            <div className="overflow-y-auto p-4">
+          <DrawerContent className="h-2/3">
+            <div className="relative overflow-y-auto px-4">
               <CodeBlock filename={filename} codes={codes} />
             </div>
           </DrawerContent>

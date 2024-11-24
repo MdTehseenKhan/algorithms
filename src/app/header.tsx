@@ -1,9 +1,10 @@
-import Link from 'next/link';
 import { MenuIcon } from 'lucide-react';
+import Link from 'next/link';
 
-import { buttonVariants } from '@/components/ui/button';
 import { GithubIcon } from '@/components/icons/github';
+import { buttonVariants } from '@/components/ui/button';
 
+import { ToggleTheme } from '@/components/toggle-theme';
 import { cn } from '@/utils';
 
 export function Header() {
@@ -38,12 +39,13 @@ export function Header() {
             <GithubIcon />
           </Link>
 
-          <Link
+          <ToggleTheme />
+          {/* <Link
             href="/"
             className={cn(buttonVariants({ variant: 'ghost', size: 'icon' }))}
           >
             <MenuIcon />
-          </Link>
+          </Link> */}
 
           {/* <Button variant="ghost" size="icon">
             <MenuIcon />

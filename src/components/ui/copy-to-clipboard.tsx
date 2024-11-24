@@ -1,7 +1,7 @@
 'use client';
 
-import React, { useState } from 'react';
 import { CheckIcon, CopyIcon } from 'lucide-react';
+import React, { useState } from 'react';
 import { toast } from 'sonner';
 
 import { cn } from '@/utils';
@@ -33,19 +33,19 @@ export const CopyToClipboard = ({
       onClick={copyToClipboard}
       aria-label={copied ? 'Copied' : 'Copy to clipboard'}
       className={cn(
-        'relative p-2 hover:bg-secondary/10 rounded-sm outline-none overflow-hidden',
+        'relative p-2 hover:bg-gray-200/10 rounded-sm outline-none overflow-hidden',
         className
       )}
     >
       <CopyIcon
         className={cn(
-          'absolute inset-0 transition-all duration-300 text-background size-4',
+          'absolute inset-0 transition-all duration-300 text-gray-200 size-4',
           copied ? '-translate-y-full opacity-0' : 'translate-y-0 opacity-100'
         )}
       />
       <CheckIcon
         className={cn(
-          'absolute inset-0 transition-all duration-300 text-background size-4',
+          'absolute inset-0 transition-all duration-300 text-gray-200 size-4',
           copied ? 'translate-y-0 opacity-100' : 'translate-y-full opacity-0'
         )}
       />
