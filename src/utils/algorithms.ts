@@ -407,16 +407,20 @@ function getEmptyFence(rails: number, length: number): string[][] {
 }
 
 export function encodeWithHillCipher(text: string, key: Matrix): string {
+  validateHillKey(key);
+
   const normalized = text.replace(/[^A-Z]/g, '').toUpperCase();
-  if (normalized.length % 2 !== 0) throw new Error('Text length must be even');
+  if (normalized.length % 2 !== 0) {
+    throw new Error('Text length must be even. Please pad if necessary.');
+  }
 
   let result = '';
   for (let i = 0; i < normalized.length; i += 2) {
     const p1 = normalized.charCodeAt(i) - 65;
     const p2 = normalized.charCodeAt(i + 1) - 65;
 
-    const c1 = (key.a * p1 + key.b * p2) % 26;
-    const c2 = (key.c * p1 + key.d * p2) % 26;
+    const c1 = modulo(key.a * p1 + key.b * p2, 26);
+    const c2 = modulo(key.c * p1 + key.d * p2, 26);
 
     result += String.fromCharCode(c1 + 65);
     result += String.fromCharCode(c2 + 65);
@@ -426,30 +430,54 @@ export function encodeWithHillCipher(text: string, key: Matrix): string {
 }
 
 export function decodeWithHillCipher(text: string, key: Matrix): string {
-  const determinant = (key.a * key.d - key.b * key.c) % 26;
-  const determinantInv = modInverse(determinant, 26);
+  validateHillKey(key);
+
+  const det = modulo(key.a * key.d - key.b * key.c, 26);
+  const detInv = modInverse(det, 26);
 
   const adjKey: Matrix = {
-    a: key.d,
-    b: -key.b,
-    c: -key.c,
-    d: key.a,
+    a: modulo(key.d, 26),
+    b: modulo(-key.b, 26),
+    c: modulo(-key.c, 26),
+    d: modulo(key.a, 26),
   };
 
-  const inverseKey: Matrix = {
-    a: (adjKey.a * determinantInv) % 26,
-    b: (adjKey.b * determinantInv) % 26,
-    c: (adjKey.c * determinantInv) % 26,
-    d: (adjKey.d * determinantInv) % 26,
+  const invKey: Matrix = {
+    a: modulo(adjKey.a * detInv, 26),
+    b: modulo(adjKey.b * detInv, 26),
+    c: modulo(adjKey.c * detInv, 26),
+    d: modulo(adjKey.d * detInv, 26),
   };
 
-  return encodeWithHillCipher(text, inverseKey);
+  return encodeWithHillCipher(text, invKey);
+}
+
+function validateHillKey(key: Matrix): void {
+  const elements = [key.a, key.b, key.c, key.d];
+  for (const element of elements) {
+    if (element < 0 || element > 25) {
+      throw new Error('Matrix elements must be between 0 and 25');
+    }
+  }
+
+  const det = modulo(key.a * key.d - key.b * key.c, 26);
+  if (det === 0 || gcd(det, 26) !== 1) {
+    throw new Error('Matrix is not invertible in modulo 26');
+  }
+}
+
+function gcd(a: number, b: number): number {
+  return b === 0 ? a : gcd(b, a % b);
+}
+
+function modulo(n: number, m: number): number {
+  return ((n % m) + m) % m;
 }
 
 function modInverse(a: number, m: number): number {
-  const normalizedA = ((a % m) + m) % m;
+  const normalizedA = modulo(a, m);
   for (let x = 1; x < m; x++) {
-    if ((normalizedA * x) % m === 1) return x;
+    if (modulo(normalizedA * x, m) === 1) return x;
   }
   throw new Error('Modular multiplicative inverse does not exist');
 }`,
@@ -467,22 +495,27 @@ function modInverse(a: number, m: number): number {
       {
         language: 'TypeScript',
         code: `export function encodeWithRowColumnCipher(text: string, key: number): string {
+  if (key <= 0) throw new Error('Key must be positive');
+  if (key > text.length)
+    throw new Error('Key cannot be larger than text length');
+
   const normalized = text.replace(/\s/g, '').toUpperCase();
   const cols = key;
   const rows = Math.ceil(normalized.length / cols);
   const matrix = getEmptyMatrix(rows, cols);
 
-  let idx = 0;
-  for (let i = 0; i < rows; i++) {
-    for (let j = 0; j < cols && idx < normalized.length; j++) {
-      matrix[i][j] = normalized[idx++];
-    }
+  for (let i = 0; i < normalized.length; i++) {
+    const row = Math.floor(i / cols);
+    const col = i % cols;
+    matrix[row][col] = normalized[i];
   }
 
   let result = '';
-  for (let j = 0; j < cols; j++) {
-    for (let i = 0; i < rows; i++) {
-      if (matrix[i][j]) result += matrix[i][j];
+  for (let col = 0; col < cols; col++) {
+    for (let row = 0; row < rows; row++) {
+      if (matrix[row][col]) {
+        result += matrix[row][col];
+      }
     }
   }
 
@@ -490,21 +523,30 @@ function modInverse(a: number, m: number): number {
 }
 
 export function decodeWithRowColumnCipher(text: string, key: number): string {
+  if (key <= 0) throw new Error('Key must be positive');
+  if (key > text.length)
+    throw new Error('Key cannot be larger than text length');
+
   const cols = key;
   const rows = Math.ceil(text.length / cols);
   const matrix = getEmptyMatrix(rows, cols);
 
+  const lastRowFill = text.length % cols || cols;
+
   let idx = 0;
-  for (let j = 0; j < cols; j++) {
-    for (let i = 0; i < rows && idx < text.length; i++) {
-      matrix[i][j] = text[idx++];
+  for (let col = 0; col < cols; col++) {
+    const rowLimit = col < lastRowFill ? rows : rows - 1;
+    for (let row = 0; row < rowLimit; row++) {
+      matrix[row][col] = text[idx++];
     }
   }
 
   let result = '';
-  for (let i = 0; i < rows; i++) {
-    for (let j = 0; j < cols; j++) {
-      if (matrix[i][j]) result += matrix[i][j];
+  for (let row = 0; row < rows; row++) {
+    for (let col = 0; col < cols; col++) {
+      if (matrix[row][col]) {
+        result += matrix[row][col];
+      }
     }
   }
 
